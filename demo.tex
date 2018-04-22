@@ -41,6 +41,32 @@
 
 \section{Theory}
 
+\begin{frame}{A Model for Light Bounces}
+  \begin{itemize}
+  \item Light bounces stochastically.
+  \item Macroscopically, this behavior is a function of the \textit{material} the light is interacting with.
+  \item A material is described by its \textbf{bidirectional scattering distribution function} (BSDF), notated \(f_s\).
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Bidirectional Scattering Distribution Function}
+  The BSDF describes the distribution of outbound light as a function of the inbound light.
+  The BSDF is ususally function of four parameters.
+  \[f_s(\mathbf x, \bm{\omega_i}, \bm{\omega_o}, \lambda) = \text{probability of this outcome}\]
+
+  \hrulefill
+
+  \begin{center}
+    \begin{tabu}{cl}
+      \(\mathbf x\) & point in space at which the light hit the object\\
+      \(\bm{\omega_o}\) & outbound radiance direction\\
+      \(\bm{\omega_i}\) & inbound radiance direction\\
+      \(\lambda\) & spectral wavelength\\
+    \end{tabu}
+  \end{center}
+
+\end{frame}
+
 \begin{frame}{The Rendering Equation}
   \[L_{o}(\mathbf x, \bm {\omega_{o}}, \lambda) = L_{e}(\mathbf x, \bm{\omega_o}, \lambda) + \int_\Omega f_s(\mathbf x, \bm{\omega_i}, \bm{\omega_o}, \lambda)L_i(\mathbf x, \bm{\omega_i}, \lambda)\ip{\bm n, \bm{\omega_i}} \dif \bm{\omega_i}.\]
 
@@ -51,7 +77,7 @@
       \(L_{o}\)& outbound radiance & \(\bm{\omega_o}\)& outbound radiance direction\\
       \(L_{i}\)& inbound radiance & \(\bm{\omega_i}\) &inbound radiance direction\\
       \(L_{e}\)& emission radiance & \(\mathbf x\) &location in space\\
-      \(f_s\) & scattering distribution & \(\lambda\)& spectral wavelength\\
+      \(f_s\) & BSDF & \(\lambda\)& spectral wavelength\\
        \(\bm n\)& surface normal at \(\mathbf x\) & \(\Omega\) & unit hemisphere above \(\bm n\)
     \end{tabu}
   \end{center}
