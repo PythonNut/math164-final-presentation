@@ -21,4 +21,32 @@
 
 \maketitle
 
+\begin{frame}{Table of contents}
+  \setbeamertemplate{section in toc}[sections numbered]
+  \tableofcontents[hideallsubsections]
+\end{frame}
+
+\section{Theory}
+
+\begin{frame}{Introduction}
+  \begin{enumerate}
+
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{The Rendering Equation}
+  \[L_{o}(\mathbf x, \bm {\omega_{o}}, \lambda) = L_{e}(\mathbf x, \bm{\omega_o}, \lambda) + \int_\Omega f_s(\mathbf x, \bm{\omega_i}, \bm{\omega_o}, \lambda)L_i(\mathbf x, \bm{\omega_i}, \lambda)\ip{\bm n, \bm{\omega_i}} \dif \bm{\omega_i}.\]
+
+  \hrulefill
+
+  \begin{center}
+    \begin{tabu}{clcl}
+      \(L_{o}\)& outbound radiance & \(\bm{\omega_o}\)& outbound radiance direction\\
+      \(L_{i}\)& inbound radiance & \(\bm{\omega_i}\) &inbound radiance direction\\
+      \(L_{e}\)& emission radiance & \(\mathbf x\) &location in space\\
+      \(f_s\) & scattering function & \(\lambda\)& spectral wavelength\\
+      \(\Omega\) & unit hemisphere around \(\bm n\) & \(\bm n\)& surface normal at \(\mathbf x\).
+    \end{tabu}
+  \end{center}
+\end{frame}
 \end{document}
