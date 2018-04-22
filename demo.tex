@@ -28,13 +28,17 @@
   \tableofcontents[hideallsubsections]
 \end{frame}
 
+\begin{frame}{Introduction}
+  \begin{itemize}
+  \item Reproducing the macroscopic behavior of light is one of the fundamental problem domains in computer graphics.
+  \item Simplifying assumptions are necessary to make computation tractable.
+  \item Raytracing seeks to simulate light by modeling photons as particles which propagate along straight lines.
+  \item Thus, we are only concerned with what happens when light ``bounces''.
+  \end{itemize}
+\end{frame}
+
 \section{Theory}
 
-\begin{frame}{Introduction}
-  \begin{enumerate}
-  \item
-  \end{enumerate}
-\end{frame}
 
 \begin{frame}{The Rendering Equation}
   \[L_{o}(\mathbf x, \bm {\omega_{o}}, \lambda) = L_{e}(\mathbf x, \bm{\omega_o}, \lambda) + \int_\Omega f_s(\mathbf x, \bm{\omega_i}, \bm{\omega_o}, \lambda)L_i(\mathbf x, \bm{\omega_i}, \lambda)\ip{\bm n, \bm{\omega_i}} \dif \bm{\omega_i}.\]
