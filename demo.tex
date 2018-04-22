@@ -1,18 +1,20 @@
 \documentclass[10pt]{beamer}
-
 \usetheme[progressbar=frametitle]{metropolis}
-\usepackage{appendixnumberbeamer}
-
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{commath}
+\usepackage{mathtools}
+\usepackage{tabu}
 \usepackage{booktabs}
-
-\usepackage{pgfplots}
-\usepgfplotslibrary{dateplot}
-
-\usepackage{xspace}
-\newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
+\usepackage{bm}
+\usepackage{xfrac}
+\usepackage{listings}
+\newcommand{\RR}{\mathbb{R}}
+\DeclarePairedDelimiter\ip{\langle }{\rangle}
+\DeclareMathOperator{\proj}{proj}
 
 \title{Importance Sampling in Ray Tracing}
-%\subtitle{A modern beamer theme}
+\subtitle{}
 \date{\today}
 \author{Jonathan Hayase \and Anqi He}
 \institute{Math 164 -- Scientific Computing -- FA18}
