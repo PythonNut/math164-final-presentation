@@ -20,6 +20,8 @@
 \newcommand{\RR}{\mathbb{R}}
 \DeclarePairedDelimiter\ip{\langle }{\rangle}
 \DeclareMathOperator{\proj}{proj}
+\newcommand{\CC}{C\nolinebreak\hspace{-.05em}\raisebox{.4ex}{\tiny\bf +}\nolinebreak\hspace{-.10em}\raisebox{.4ex}{\tiny\bf +}}
+\def\CC{{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\tiny\bf ++}}}
 
 \title{Importance Sampling in Ray Tracing}
 \subtitle{}
@@ -407,6 +409,20 @@
 \end{frame}
 
 \section{Implementation}
+
+\begin{frame}{GitHub Repository}
+  \includegraphics[width=\paperwidth, center]{github.png}
+\end{frame}
+
+\begin{frame}{Implementation Statistics}
+  \begin{itemize}
+  \item Written in \CC
+  \item \(\approx 1,700\) lines of code
+  \item Makes use of Eigen for linear algebra
+  \item Multithreaded
+  \item Optimized RNG (Xoroshiro128+)
+  \end{itemize}
+\end{frame}
 
 \section{Results}
 \begin{frame}{Rendered images}
