@@ -191,13 +191,25 @@
       \caption{Definition of \(\phi_\Delta\).}
     \end{figure}
   \end{columns}
-  \[\begin{aligned}
+  \[
+    \begin{aligned}
       \theta_{\bm i} &= \cos^{-1} \ip{\bm{\omega_i}, \bm n}\\
       \theta_{\bm o} &= \cos^{-1} \ip{\bm{\omega_o}, \bm n}\\
     \end{aligned}
-    \qquad\phi_\Delta = \cos^{-1}\del{\frac{\ip{\bm{\omega_o} - \proj_{\bm n} \bm{\omega_o}, \bm{\omega_i} - \proj_{\bm n} \bm{\omega_i}}}{\norm{\bm{\omega_o} - \proj_{\bm n} \bm{\omega_o}} \norm{\bm{\omega_i} - \proj_{\bm n} \bm{\omega_i}}}} \]
+    \qquad\phi_\Delta = \cos^{-1}\del{\frac{\ip{\bm{\omega_o} - \proj_{\bm n} \bm{\omega_o}, \bm{\omega_i} - \proj_{\bm n} \bm{\omega_i}}}{\norm{\bm{\omega_o} - \proj_{\bm n} \bm{\omega_o}} \norm{\bm{\omega_i} - \proj_{\bm n} \bm{\omega_i}}}}
+  \]
 \end{frame}
 
+\begin{frame}{Integration \& Importance Sampling}
+  \textbf{Recall:} Ignoring emission, we want to calculate
+  \[L_{o}(\mathbf x, \bm {\omega_{o}}, \lambda) = \int_\Omega f_s(\theta_{\bm i}, \theta_{\bm o}, \phi_\Delta, \lambda)L_i(\mathbf x, \bm{\omega_i}, \lambda)\cos \theta_{\bm i} \dif \bm{\omega_i}\]
+  \\[-0.5em]
+  \begin{enumerate}
+  \item In general, we know nothing about the distribution of \(L_i(\mathbf x, \bm{\omega_i}, \lambda, t)\).
+  \item However, \(f_s(\theta_{\bm i}, \theta_{\bm o}, \phi_\Delta)\cos \theta_{\bm i}\) also has significant influence.
+  \item It's still worth it to do importance sampling over the (angular) BSDF!
+  \end{enumerate}
+\end{frame}
 \section{Implementation}
 
 \section{Results}
