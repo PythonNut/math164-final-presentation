@@ -9,6 +9,8 @@
 \usepackage{bm}
 \usepackage{xfrac}
 \usepackage{listings}
+\usepackage{subcaption}
+\usepackage{graphicx}
 \newcommand{\RR}{\mathbb{R}}
 \DeclarePairedDelimiter\ip{\langle }{\rangle}
 \DeclareMathOperator{\proj}{proj}
@@ -34,9 +36,19 @@
   \begin{itemize}
   \item Reproducing the macroscopic behavior of light is one of the fundamental problem domains in computer graphics.
   \item Simplifying assumptions are necessary to make computation tractable.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.5\linewidth,height=0.5\textheight,keepaspectratio]{intro.png}
+    \caption{Monte Carlo ray tracing}
+\end{figure}
+\begin{itemize}
   \item Raytracing seeks to simulate light by modeling photons as particles which propagate along straight lines.
   \item Thus, we are only concerned with what happens when light ``bounces''.
-  \end{itemize}
+\end{itemize}
 \end{frame}
 
 \section{Theory}
@@ -84,7 +96,42 @@
 \end{frame}
 
 \section{Implementation}
+
 \section{Results}
+\begin{frame}{Rendered images}
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.9\linewidth]{IS100.png}
+  \caption{Importance sampling, 100 samples}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.9\linewidth]{DS100.png}
+  \caption{Direct sampling, 100 samples/pixel}
+  \label{fig:sub2}
+\end{subfigure}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.9\textwidth]{importance_sampling.png}
+    \caption{Importance sampling, 1000 samples/pixel}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.9\textwidth]{direct_sampling.png}
+    \caption{Direct sampling, 1000 samples}
+\end{figure}
+\end{frame}
+
 \section{Discussions}
 
 \end{document}
