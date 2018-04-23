@@ -12,7 +12,10 @@
 \usepackage{subcaption}
 \usepackage{graphicx}
 \usepackage{tikz}
-\usetikzlibrary{quotes, angles}
+\usepackage{pgfplots}
+\usepackage{hyperref}
+\usepackage[export]{adjustbox}
+\usetikzlibrary{quotes, angles, intersections}
 
 \newcommand{\RR}{\mathbb{R}}
 \DeclarePairedDelimiter\ip{\langle }{\rangle}
@@ -22,7 +25,7 @@
 \subtitle{}
 \date{\today}
 \author{Jonathan Hayase \and Anqi He}
-\institute{Math 164 -- Scientific Computing -- FA18}
+\institute{Math 164 -- Scientific Computing -- Spring 2018}
 
 \begin{document}
 
@@ -36,22 +39,22 @@
 \section{Introduction}
 
 \begin{frame}{Introduction}
-  \begin{itemize}
-  \item Reproducing the macroscopic behavior of light is one of the fundamental problem domains in computer graphics.
-  \item Simplifying assumptions are necessary to make computation tractable.
-  \end{itemize}
-\end{frame}
+  \begin{columns}
+    \column{0.5\textwidth}
+    \begin{itemize}
+    \item Reproducing the macroscopic behavior of light is one of the fundamental problem domains in computer graphics.
+    \item Simplifying assumptions are necessary to make computation tractable.
+    \item Raytracing seeks to simulate light by modeling photons as particles which propagate along straight lines.
+    \item Thus, we are only concerned with what happens when light ``bounces''.
+    \end{itemize}
 
-\begin{frame}
-\begin{figure}[H]
-  \centering
-    \includegraphics[width=0.5\linewidth,height=0.5\textheight,keepaspectratio]{intro.png}
-    \caption{Monte Carlo ray tracing}
-\end{figure}
-\begin{itemize}
-  \item Raytracing seeks to simulate light by modeling photons as particles which propagate along straight lines.
-  \item Thus, we are only concerned with what happens when light ``bounces''.
-\end{itemize}
+    \column{0.5\textwidth}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=\linewidth,keepaspectratio]{intro.png}
+      \caption{Monte Carlo ray tracing}
+    \end{figure}
+  \end{columns}
 \end{frame}
 
 \section{Theory}
@@ -153,7 +156,7 @@
     \column{0.5\textwidth}
     \begin{figure}[H]
       \centering
-      \includegraphics[scale=0.07]{anisotropy.jpg}
+      \includegraphics[width=\linewidth,keepaspectratio]{anisotropy.jpg}
       \caption{Example of Anisotropic shading.}
     \end{figure}
   \end{columns}
@@ -246,9 +249,163 @@
     \[F(\theta_{\bm i}) = \int_0^{\theta_{\bm i}} \sin 2\theta \dif \theta = \sin^2 \theta_{\bm i}\]
   \item Let \(\xi_\theta \sim \mathcal{U}(0, 1)\) and invert CDF.
     \[\xi_\theta = \sin^2 \theta_{\bm i} \implies \theta_{\bm i} = \sin^{-1}\sqrt{\xi_\theta}\]
-  \item \(f_s\) is uniform with respect to \(\phi_\Delta\). With \(\xi_\phi \sim \mathcal{U}(0, 1)\), we have \(\phi_\Delta = 2\pi\xi_\phi\).
+  \item \(f_s\) is uniform with respect to \(\phi_\Delta\). When \(\xi_\phi \sim \mathcal{U}(0, 1)\), we have \(\phi_\Delta = 2\pi\xi_\phi\).
   \end{enumerate}
 \end{frame}
+
+\begin{frame}{Aside: Perfect Mirrors}
+  \begin{enumerate}
+  \item The direct opposite of a ideal diffuse surface is a ideal mirror.
+  \item BSDF is a double Dirac delta function.
+    \[f_s(\theta_{\bm i}, \theta_{\bm o}, \phi_\Delta) = \rho_s \delta(\theta_{\bm i} - \theta_{\bm o})\delta(\phi_\Delta + \pi).\]
+    As before, \(\rho_s \in \intcc{0, 1}\) is the specular albedo.
+  \item No sampling of the BSDF is needed. \(\bm{\omega_i}\) is uniquely determined by
+    \[\bm{\omega_i} = 2\abs{\ip{\bm{\omega_o}, \bm n}}\bm n-  \bm{\omega_o}.\]
+  \item Ideal mirrors aren't a good approximation for rough glossy surfaces, like unpolished metals.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{GGX Glossy (Introduction)}
+  \begin{columns}
+    \column{0.5\textwidth}
+    \begin{enumerate}
+    \item Many surfaces exhibit blurred reflection due to surface scattering.
+      This is due to microscopic variation in the surface.
+    \item GGX is the current state of the art for shiny surfaces.
+    \item Also known as Trowbridge-Reitz Glossy.
+    \end{enumerate}
+
+    \column{0.5\textwidth}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=\linewidth,keepaspectratio]{rough_glossy.jpg}
+      \caption{Rough glossy spheres}
+    \end{figure}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{GGX (Fresnel)}
+  \begin{enumerate}
+  \item For conductors (i.e. metals), incident light may be absorbed and converted into heat.
+  \item This is described by the Fresnel term \(F(\theta_{\bm i}) = \frac{r_{\parallel}^2 + r_{\perp}^2}{2}\) which calculates the fraction of reflected light as a function of \(\theta_{\bm i}\).
+  \end{enumerate}
+  \[r_{\parallel}^2 = \frac{\del{\eta^2 + \kappa^2}\cos^2 \theta_{\bm i} - 2\eta \cos \theta_{\bm i} + 1}{\del{\eta^2 + \kappa^2}\cos^2 \theta_{\bm i} + 2\eta \cos \theta_{\bm i} + 1}
+    \quad r_{\perp}^2 = \frac{\del{\eta^2 + \kappa^2} - 2\eta \cos \theta_{\bm i} + \cos^2 \theta_{\bm i}}{\del{\eta^2 + \kappa^2} + 2\eta \cos \theta_{\bm i} + \cos^2 \theta_{\bm i}} \]
+  \\[-0.0em]
+  \begin{enumerate}
+    \setcounter{enumi}{2}
+  \item \(\eta\) and \(\kappa\) for most metals can be found on \url{refractiveindex.info}!
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{GGX Glossy (Microfacets)}
+  \begin{enumerate}
+  \item Blurred reflections are due to microscopic variation in the surface.
+  \item The surface can be modeled as differentially tiny facets, each of which is an ideal reflector itself, called \textbf{microfacets}.
+  \item The microfacet normals \(\bm m\) follow the experimentally derived distribution
+  \end{enumerate}
+  \[D(\bm m) = \frac{\alpha^2 \chi^+(\ip{\bm m, \bm n})}{\pi\del{\del{\alpha^2 - 1}\cos^2 \theta_{\bm m} + 1}^2}.\]
+
+  \hrulefill
+
+  \begin{center}
+    \begin{tabu}{cl}
+      \(D(\bm m)\) & PDF of the microfacet normal \(\bm m\)\\
+      \(\chi^+(x)\) & equals \(1\) if \(x>0\) and \(0\) otherwise\\
+      \(\theta_{\bm m}\) & is the angle between \(\bm n\) and \(\bm m\)\\
+      \(\alpha > 0\) & amount of surface roughness.
+    \end{tabu}
+  \end{center}
+\end{frame}
+
+\begin{frame}{GGX (Smith Shadow Masking)}
+  \begin{enumerate}
+  \item Microfacets form a continuous microscopic surface, which casts shadows on itself.
+  \item Thus it is possible for a ray \( \bm r\) to intersect with multiple microfacets.
+    \begin{figure}[H]
+      \begin{tikzpicture}[domain=1:5,samples=200]
+        \draw[name path=surface] plot (\x, {0.3*sin(6*\x r)});
+        \draw[name path=ray,draw=none] (5,1) -- (1.4,-0.3);
+        \draw[thick,name intersections={of=ray and surface}, ->](5,1)--(intersection-3);
+        \draw[name intersections={of=ray and surface}, ->](intersection-3)--(1.4,-0.3);
+      \end{tikzpicture}
+      \caption{A ray intersecting with a micro surface multiple times.}
+    \end{figure}
+    
+  \item To avoid double-counting, we must employ a corrective term \(G\).
+
+    The Smith shadow masking function approximates \(G\) as the separable product two monodirectional masking terms
+    \begin{align*}
+      G(\bm{\omega_i}, \bm{\omega_o}, \bm m) &= G_1(\bm{\omega_i}, \bm m)G_1(\bm{\omega_o}, \bm m)\\
+      G_1(\bm v, \bm m) &= \chi^2\del{\frac{\ip{\bm v, \bm m}}{\ip{\bm v, \bm n}}} \frac{2}{1 + \sqrt{1 + \alpha^2 \tan^2{\theta_{\bm v}}}}
+    \end{align*}
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{GGX (Putting the Pieces Together)}
+  \begin{enumerate}
+  \item Given \(\bm{\omega_{i}}\) and \(\bm{\omega_{o}}\), we find the mirror microfacet unit normal to be
+    \[\bm m = \frac{\bm{\omega_i} + \bm{\omega_o}}{\norm{\bm{\omega_i} + \bm{\omega_o}}}\]
+  \item Thus, we can assemble the terms of the BSDF like so
+    \[f_s(\theta_{\bm i}, \theta_{\bm o}, \phi_\Delta) = \rho_sF(\theta_{\bm i})D\del{\frac{\bm{\omega_i} + \bm{\omega_o}}{\norm{\bm{\omega_i} + \bm{\omega_o}}}}G\del{\bm{\omega_i}, \bm{\omega_o}, \frac{\bm{\omega_i} + \bm{\omega_o}}{\norm{\bm{\omega_i} + \bm{\omega_o}}}}\]
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{GGX (Importance Sampling Introduction)}
+  \begin{enumerate}
+  \item Importance sampling is especially suitable for glossy surfaces, as the distribution of inbound light is highly nonuniform.
+  \item In the limit as \(\alpha \to 0\) the distribution collapses towards a double Dirac delta!
+  \item To simplify our calculations, we assume that \(D\) is the main contributor to the shape of the BSDF.
+  \item This allows us to sample in terms of the microfacet normal \(\bm m\).
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{GGX (Microfacet Importance Sampling Derivation 1)}
+  \begin{enumerate}
+  \item Substituting this into the rendering equation, and solving for \(\omega_i\) in terms of \(\bm m\) yields
+  \end{enumerate}
+  \[L_{o}(\mathbf x, \bm {\omega_{o}}, \lambda) = \int_0^{2\pi}\int_0^{\sfrac{\pi}{2}} \frac{\alpha^2 \cos\theta_{\bm m} \sin\theta_{\bm m} L_i(\mathbf x, 2\abs{\ip{\bm{\omega_o}, \bm n}}\bm n-  \bm{\omega_o}, \lambda)}{\pi\del{\del{\alpha^2 - 1}\cos^2 \theta_{\bm m} + 1}^2} \dif\theta_{\bm m}\dif\phi_\Delta \]
+  \\[0em]
+  \begin{enumerate}
+    \setcounter{enumi}{1}
+  \item Accordingly, we wish to sample the PDF
+    \[P_{\bm m}(\theta_{\bm m}, \phi_\Delta) = \frac{\alpha^2 \cos\theta_{\bm m} \sin\theta_{\bm m}}{\pi\del{\del{\alpha^2 - 1}\cos^2 \theta_{\bm m} + 1}^2}\]
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{GGX (Microfacet Importance Sampling Derivation 2)}
+  \begin{enumerate}
+  \item \(f_s\) doesn't depend on \(\phi_\Delta\), so we can define the PDF in terms of \(\theta_{\bm m}\)
+  \end{enumerate}
+  \[P_{\bm m}(\theta_{\bm m}) = \int_0^{2\pi}\frac{\alpha^2 \cos\theta_{\bm m} \sin\theta_{\bm m}}{\pi\del{\del{\alpha^2 - 1}\cos^2 \theta_{\bm m} + 1}^2}\dif\phi_\Delta = \frac{2\alpha^2 \cos\theta_{\bm m} \sin\theta_{\bm m}}{\del{\del{\alpha^2 - 1}\cos^2 \theta_{\bm m} + 1}^2}\]
+  \begin{enumerate}
+    \setcounter{enumi}{2}
+  \item Integrate to find the CDF.
+    \begin{align*}
+      F_{\bm m}(\theta_{\bm m}) &= \int_0^{\theta_{\bm m}} \frac{2\alpha^2 \cos\theta \sin\theta}{\del{\del{\alpha^2 - 1}\cos^2 \theta + 1}^2}\dif\theta\\
+      &= \frac{\alpha^2}{\alpha^2 - 1}  \del{\frac{1}{\del{\alpha^2 - 1}\cos^2\theta_{\bm m} + 1} - \frac{1}{\alpha^2}}
+    \end{align*}
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{GGX (Microfacet Importance Sampling Derivation 3)}
+  \begin{enumerate}
+    \setcounter{enumi}{3}
+  \item Let \(\xi_\theta \sim \mathcal{U}(0, 1)\) and invert CDF.
+    \begin{align*}
+      \xi_\theta &= \frac{\alpha^2}{\alpha^2 - 1}  \del{\frac{1}{\del{\alpha^2 - 1}\cos^2\theta_{\bm m} + 1} - \frac{1}{\alpha^2}}\\
+      \theta_{\bm m}&= \cos^{-1}\del{\frac{1- \xi_\theta}{\del{\xi_\theta\del{\alpha^2 - 1} + 1}}}
+    \end{align*}
+  \item \(f_s\) is uniform with respect to \(\phi_\Delta\). When \(\xi_\phi \sim \mathcal{U}(0, 1)\), we have \(\phi_\Delta = 2\pi\xi_\phi\).
+  \item We are sampling \(\bm m\), but we need the PDF in terms of \(\bm{\omega_i}\) and \(\bm{\omega_o}\).
+    To calculate the PDF, we must use the Jacobian of the transform
+    \begin{align*}
+      P(\omega_{\bm i}) &= P_{\bm m}\del{\frac{\bm{\omega_i} + \bm{\omega_o}}{\norm{\bm{\omega_i} + \bm{\omega_o}}} } \norm{\dpd{\bm m}{\bm{\omega_o}}}\\
+                        &= \frac{1}{4\abs{\ip{\bm{\omega_i}, \bm n}\ip{\bm{\omega_o}, \bm n}}}P_{\bm m}\del{\frac{\bm{\omega_i} + \bm{\omega_o}}{\norm{\bm{\omega_i} + \bm{\omega_o}}}}
+    \end{align*}
+  \end{enumerate}
+\end{frame}
+
 \section{Implementation}
 
 \section{Results}
