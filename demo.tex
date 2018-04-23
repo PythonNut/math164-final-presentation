@@ -11,6 +11,9 @@
 \usepackage{listings}
 \usepackage{subcaption}
 \usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{quotes, angles}
+
 \newcommand{\RR}{\mathbb{R}}
 \DeclarePairedDelimiter\ip{\langle }{\rangle}
 \DeclareMathOperator{\proj}{proj}
@@ -52,14 +55,14 @@
 \end{frame}
 
 \section{Theory}
-
-\begin{frame}{A Model for Light Bounces}
+\begin{frame}{A Model for Individual Light Bounces}
   \begin{itemize}
   \item Light bounces stochastically.
   \item Macroscopically, this behavior is a function of the \textit{material} the light is interacting with.
   \item A material is described by its \textbf{bidirectional scattering distribution function} (BSDF), notated \(f_s\).
   \end{itemize}
 \end{frame}
+
 
 \begin{frame}{Bidirectional Scattering Distribution Function}
   The BSDF describes the distribution of outbound light as a function of the inbound light.
@@ -76,11 +79,53 @@
       \(\lambda\) & spectral wavelength\\
     \end{tabu}
   \end{center}
-
 \end{frame}
 
-\begin{frame}{The Rendering Equation}
-  \[L_{o}(\mathbf x, \bm {\omega_{o}}, \lambda) = L_{e}(\mathbf x, \bm{\omega_o}, \lambda) + \int_\Omega f_s(\mathbf x, \bm{\omega_i}, \bm{\omega_o}, \lambda)L_i(\mathbf x, \bm{\omega_i}, \lambda)\ip{\bm n, \bm{\omega_i}} \dif \bm{\omega_i}.\]
+% \begin{frame}{Physical Properties of the BSDF}
+%   \begin{itemize}
+%   \item Energy conserving
+%     \[\int_\Omega f_s(\mathbf x, \bm{\omega_i}, \bm{\omega_o}, \lambda)L_i(\mathbf x, \bm{\omega_i}, \lambda)\ip{\bm n, \bm{\omega_i}} \dif \bm{\omega_i} \leq L_i(\mathbf x, \bm{\omega_i}, \lambda)\]
+%   \item Helmholtz Reciprocity (follows from 2\textsuperscript{nd} Law of Thermodynamics)
+%     \[f_s(\mathbf x, \bm{\omega_i}, \bm{\omega_o}, \lambda) = f_s(\mathbf x, \bm{\omega_o}, \bm{\omega_i}, \lambda)\]
+%   \end{itemize}
+% \end{frame}
+
+\begin{frame}{Raytracing direction}
+  Raytracing can be formulated as two symmetric notions:\\[2em]
+  \begin{columns}
+    \column{0.5\textwidth}
+    \begin{figure}[H]
+      \centering
+      \begin{tikzpicture}
+        \filldraw[color = gray!40, draw=black] (-1.4,-0.4) -- (-0.6,-0.5) -- (-0.6,0.5) -- (-1.4, 0.4) -- cycle;
+        \draw[thick] (-1,0) -- (-3,-1) node[midway, below] {\(\bm{\omega_i}\)};
+        \draw[->] (-1,0)  --(-3,1.2) node[midway, above] {\(\bm{\omega_o}\)};
+        \draw[->] (-1,0)  --(-3,1);
+        \draw[->] (-1,0)  --(-3,0.8);
+      \end{tikzpicture}
+      \caption{\textbf{Forward path tracing}, i.e. trace ``light rays'' from lights to eye.}
+    \end{figure}
+
+    \column{0.5\textwidth}
+    \begin{figure}[H]
+      \centering
+      \begin{tikzpicture}
+        \filldraw[color = gray!40, draw=black] (-1.4,-0.4) -- (-0.6,-0.5) -- (-0.6,0.5) -- (-1.4, 0.4) -- cycle;
+        \draw[->] (-1,0) -- (-3,-0.8);
+        \draw[->] (-1,0) -- (-3,-1);
+        \draw[->] (-1,0) -- (-3,-1.2) node[midway, below] {\(\bm{\omega_i}\)};
+        \draw[thick] (-1,0)  --(-3,1) node[midway, above] {\(\bm{\omega_o}\)};
+      \end{tikzpicture}
+      \caption{\textbf{Backward path tracing}, i.e. trace ``eye rays'' from eye to lights.}
+    \end{figure}
+  \end{columns}
+  Fortunately, due to Helmholtz Reciprocity, these two methods are equivalent!
+  However, since we have one camera and (often) many lights, it's easier to do backwards path tracing.
+\end{frame}
+
+\begin{frame}{Overall Behavior}
+  The overall behavior of light is described by the rendering equation\footnote{this is the backward formulation}
+  \[L_{o}(\mathbf x, \bm {\omega_{o}}, \lambda) = L_{e}(\mathbf x, \bm{\omega_o}, \lambda) + \int_\Omega f_s(\mathbf x, \bm{\omega_i}, \bm{\omega_o}, \lambda)L_i(\mathbf x, \bm{\omega_i}, \lambda)\ip{\bm n, \bm{\omega_i}} \dif \bm{\omega_i}\]
 
   \hrulefill
 
@@ -89,10 +134,68 @@
       \(L_{o}\)& outbound radiance & \(\bm{\omega_o}\)& outbound radiance direction\\
       \(L_{i}\)& inbound radiance & \(\bm{\omega_i}\) &inbound radiance direction\\
       \(L_{e}\)& emission radiance & \(\mathbf x\) &location in space\\
-      \(f_s\) & BSDF & \(\lambda\)& spectral wavelength\\
-       \(\bm n\)& surface normal at \(\mathbf x\) & \(\Omega\) & unit hemisphere above \(\bm n\)
+      \(f_s\) & scattering distribution & \(\lambda\)& spectral wavelength\\
+      \(\bm n\)& surface normal at \(\mathbf x\) & \(\Omega\) & unit hemisphere above \(\bm n\)
     \end{tabu}
   \end{center}
+\end{frame}
+
+\begin{frame}{Isotropy}
+  \begin{columns}
+    \column{0.5\textwidth}
+    \begin{enumerate}
+    \item The BSDF for most materials is invariant under rotation about the surface normal.
+      This behavior is called \textbf{isotropy}.
+
+    \item Although examples of anisotropic material exist, we will ignore them here for simplicity.
+    \end{enumerate}
+
+    \column{0.5\textwidth}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[scale=0.07]{anisotropy.jpg}
+      \caption{Example of Anisotropic shading.}
+    \end{figure}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Change of Variables}
+  Since the BSDF \(f_s\) is invariant under rotation about \(\bm n\), we can rewrite \(f_s(\mathbf x, \bm{\omega_i}, \bm{\omega_o}, \lambda)\) in terms relative to \(\bm n\).
+  \begin{columns}
+    \column{0.5\textwidth}
+    \begin{figure}[H]
+      \centering
+      \begin{tikzpicture}
+        \filldraw[color = gray!40, draw=black] (-1.5,-0.3) -- (1.5,-0.3) -- (1,0.3) -- (-1, 0.3) -- cycle;
+        \draw[->] (0,0) coordinate (o) -- (-1.2,1.2) coordinate (wi) node [pos=1.15] {\(\bm{\omega_i}\)};
+        \draw[->] (0,0)  --(1.2,1.2) coordinate (wo) node [pos=1.15] {\(\bm{\omega_o}\)};
+        \draw[->] (0,0) -- (0, 1.5) coordinate (n) node [above] {\(\bm n\)};
+        \filldraw (0,0) circle (1pt);
+        \draw pic["$\theta_{\bm o}$",draw=black,angle eccentricity=1.4,angle radius=0.8cm] {angle=n--o--wi};
+        \draw pic["$\theta_{\bm i}$",draw=black,angle eccentricity=1.4,angle radius=0.8cm] {angle=wo--o--n};
+      \end{tikzpicture}
+      \caption{Definition of \(\theta_{\bm o}\) and \(\theta_{\bm i}\).}
+    \end{figure}
+
+    \column{0.5\textwidth}
+    \begin{figure}[H]
+      \centering
+      \begin{tikzpicture}
+        \filldraw[color = gray!40, draw=black] (-1,-1) -- (1,-1) -- (1,1) -- (-1, 1) -- cycle;
+        \draw[->] (0,0) coordinate (o) -- (-1.3,1.1) coordinate (wi) node[pos=1.15] {\(\bm{\omega_i}\)};
+        \draw[->] (0,0)  --(1.4,1) coordinate (wo) node [pos=1.15] {\(\bm{\omega_o}\)};
+        \node (0,0) [below] {\(\bm n\)};
+        \filldraw (0,0) circle (1pt);
+        \draw pic["$\phi_\Delta$",draw=black,angle eccentricity=2,angle radius=0.3cm] {angle=wo--o--wi};
+      \end{tikzpicture}
+      \caption{Definition of \(\phi_\Delta\).}
+    \end{figure}
+  \end{columns}
+  \[\begin{aligned}
+      \theta_{\bm i} &= \cos^{-1} \ip{\bm{\omega_i}, \bm n}\\
+      \theta_{\bm o} &= \cos^{-1} \ip{\bm{\omega_o}, \bm n}\\
+    \end{aligned}
+    \qquad\phi_\Delta = \cos^{-1}\del{\frac{\ip{\bm{\omega_o} - \proj_{\bm n} \bm{\omega_o}, \bm{\omega_i} - \proj_{\bm n} \bm{\omega_i}}}{\norm{\bm{\omega_o} - \proj_{\bm n} \bm{\omega_o}} \norm{\bm{\omega_i} - \proj_{\bm n} \bm{\omega_i}}}} \]
 \end{frame}
 
 \section{Implementation}
