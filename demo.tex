@@ -207,7 +207,46 @@
   \begin{enumerate}
   \item In general, we know nothing about the distribution of \(L_i(\mathbf x, \bm{\omega_i}, \lambda, t)\).
   \item However, \(f_s(\theta_{\bm i}, \theta_{\bm o}, \phi_\Delta)\cos \theta_{\bm i}\) also has significant influence.
-  \item It's still worth it to do importance sampling over the (angular) BSDF!
+  \item It's still worth it to do importance sampling!
+  \end{enumerate}
+\end{frame}
+
+\section{Shader Examples}
+
+\begin{frame}{Lambert Diffuse (Introduction)}
+  \begin{enumerate}
+  \item ``Ideal'' diffuse: light is uniformly scattered in all directions.
+  \item Simplest possible BSDF, a constant!
+    \[f_s(\theta_{\bm i}, \theta_{\bm o}, \phi_\Delta) = \frac{\rho_d}{\pi}\]
+  \item \(\rho_d \in \intcc{0,1}\) is the albedo, or reflectance when \( \theta_{\bm i} = \theta_{\bm o} = 0\).
+  \item Present in almost all production raytracers in some form.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Lambert Diffuse (Integral Derivation)}
+  Substituting \(f_s\) into the Rendering Equation yields
+  \begin{align*}
+    L_{o}(\mathbf x, \bm {\omega_{o}}, \lambda)
+    &= \rho_d \int_\Omega \frac{1}{\pi} L_i(\mathbf x, \bm{\omega_i}, \lambda)\cos\theta_{\bm i} \dif \bm{\omega_i}
+  \end{align*}
+  Now, it's important to note that this integral is with respect to solid angle.
+  We can rewrite in terms of solid angle with \( \dif \omega_{\bm i} = \sin\theta_{\bm i} \dif\theta_{\bm i}\dif\phi_\Delta\) like so
+  \begin{align*}
+   L_{o}(\mathbf x, \bm {\omega_{o}}, \lambda) &= \rho_d \int_0^{2\pi}\int_0^{\sfrac{\pi}{2}} \frac{1}{\pi} L_i(\mathbf x, \bm{\omega_i}, \lambda)\cos\theta_{\bm i} \sin\theta_{\bm i}\dif \theta_{\bm i} \dif \phi_\Delta.
+  \end{align*}
+  We are interested in sampling with respect to the PDF
+  \[P(\theta_{\bm i}, \phi_\Delta) = \frac{1}{\pi}\cos \theta_{\bm i}\sin \theta_{\bm i} = \frac{\sin 2\theta_{\bm i}}{2\pi}\]
+\end{frame}
+
+\begin{frame}{Lambert Diffuse (Importance Sampling Derivation)}
+  \begin{enumerate}
+  \item \(f_s\) doesn't depend on \(\phi_\Delta\), so we can define the PDF in terms of \(\theta_{\bm i}\)
+    \[P(\theta_{\bm i}) = \int_0^{2\pi} P(\theta_{\bm i}, \phi)\dif \phi = \int_0^{2\pi} \frac{\sin 2\theta_{\bm i}}{2\pi} \dif \phi = \sin 2\theta_{\bm i}\]
+  \item Integrate to find the CDF.
+    \[F(\theta_{\bm i}) = \int_0^{\theta_{\bm i}} \sin 2\theta \dif \theta = \sin^2 \theta_{\bm i}\]
+  \item Let \(\xi_\theta \sim \mathcal{U}(0, 1)\) and invert CDF.
+    \[\xi_\theta = \sin^2 \theta_{\bm i} \implies \theta_{\bm i} = \sin^{-1}\sqrt{\xi_\theta}\]
+  \item \(f_s\) is uniform with respect to \(\phi_\Delta\). With \(\xi_\phi \sim \mathcal{U}(0, 1)\), we have \(\phi_\Delta = 2\pi\xi_\phi\).
   \end{enumerate}
 \end{frame}
 \section{Implementation}
