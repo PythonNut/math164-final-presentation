@@ -69,40 +69,7 @@
 \end{frame}
 
 \section{Theory}
-\begin{frame}{A Model for Individual Light Bounces}
-  \begin{itemize}
-  \item Light bounces stochastically.
-  \item Macroscopically, this behavior is a function of the \textit{material} the light is interacting with.
-  \item A material is described by its \textbf{bidirectional scattering distribution function} (BSDF), notated \(f_s\).
-  \end{itemize}
-\end{frame}
 
-
-\begin{frame}{Bidirectional Scattering Distribution Function}
-  The BSDF describes the distribution of outbound light as a function of the inbound light.
-  The BSDF is ususally function of four parameters.
-  \[f_s(\mathbf x, \bm{\omega_i}, \bm{\omega_o}, \lambda) = \text{probability of this outcome}\]
-
-  \hrulefill
-
-  \begin{center}
-    \begin{tabu}{cl}
-      \(\mathbf x\) & point in space at which the light hit the object\\
-      \(\bm{\omega_o}\) & outbound radiance direction\\
-      \(\bm{\omega_i}\) & inbound radiance direction\\
-      \(\lambda\) & spectral wavelength\\
-    \end{tabu}
-  \end{center}
-\end{frame}
-
-% \begin{frame}{Physical Properties of the BSDF}
-%   \begin{itemize}
-%   \item Energy conserving
-%     \[\int_\Omega f_s(\mathbf x, \bm{\omega_i}, \bm{\omega_o}, \lambda)L_i(\mathbf x, \bm{\omega_i}, \lambda)\ip{\bm n, \bm{\omega_i}} \dif \bm{\omega_i} \leq L_i(\mathbf x, \bm{\omega_i}, \lambda)\]
-%   \item Helmholtz Reciprocity (follows from 2\textsuperscript{nd} Law of Thermodynamics)
-%     \[f_s(\mathbf x, \bm{\omega_i}, \bm{\omega_o}, \lambda) = f_s(\mathbf x, \bm{\omega_o}, \bm{\omega_i}, \lambda)\]
-%   \end{itemize}
-% \end{frame}
 
 \begin{frame}{Raytracing direction}
   Raytracing can be formulated as two symmetric notions:\\[2em]
@@ -153,6 +120,40 @@
     \end{tabu}
   \end{center}
 \end{frame}
+
+\begin{frame}{A Model for Individual Light Bounces}
+  \begin{itemize}
+  \item Light bounces stochastically.
+  \item Macroscopically, this behavior is a function of the \textit{material} the light is interacting with.
+  \item A material is described by its \textbf{bidirectional scattering distribution function} (BSDF), notated \(f_s\).
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Bidirectional Scattering Distribution Function}
+  The BSDF describes the distribution of outbound light as a function of the inbound light.
+  The BSDF is ususally function of four parameters.
+  \[f_s(\mathbf x, \bm{\omega_i}, \bm{\omega_o}, \lambda) = \text{probability of this outcome}\]
+
+  \hrulefill
+
+  \begin{center}
+    \begin{tabu}{cl}
+      \(\mathbf x\) & point in space at which the light hit the object\\
+      \(\bm{\omega_o}\) & outbound radiance direction\\
+      \(\bm{\omega_i}\) & inbound radiance direction\\
+      \(\lambda\) & spectral wavelength\\
+    \end{tabu}
+  \end{center}
+\end{frame}
+
+% \begin{frame}{Physical Properties of the BSDF}
+%   \begin{itemize}
+%   \item Energy conserving
+%     \[\int_\Omega f_s(\mathbf x, \bm{\omega_i}, \bm{\omega_o}, \lambda)L_i(\mathbf x, \bm{\omega_i}, \lambda)\ip{\bm n, \bm{\omega_i}} \dif \bm{\omega_i} \leq L_i(\mathbf x, \bm{\omega_i}, \lambda)\]
+%   \item Helmholtz Reciprocity (follows from 2\textsuperscript{nd} Law of Thermodynamics)
+%     \[f_s(\mathbf x, \bm{\omega_i}, \bm{\omega_o}, \lambda) = f_s(\mathbf x, \bm{\omega_o}, \bm{\omega_i}, \lambda)\]
+%   \end{itemize}
+% \end{frame}
 
 \begin{frame}{Isotropy}
   \begin{columns}
