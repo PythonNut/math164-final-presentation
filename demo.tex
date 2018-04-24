@@ -51,8 +51,7 @@
 \section{Introduction}
 
 \begin{frame}{Introduction}
-  \begin{columns}
-    \column{0.5\textwidth}
+
     \begin{itemize}
     \item Reproducing the macroscopic behavior of light is one of the fundamental problem domains in computer graphics.
     \item Simplifying assumptions are necessary to make computation tractable.
@@ -60,13 +59,6 @@
     \item Thus, we are only concerned with what happens when light ``bounces''.
     \end{itemize}
 
-    \column{0.5\textwidth}
-    \begin{figure}[H]
-      \centering
-      \includegraphics[width=\linewidth,keepaspectratio]{intro.png}
-      \caption{Monte Carlo ray tracing}
-    \end{figure}
-  \end{columns}
 \end{frame}
 
 \section{Theory}
@@ -94,7 +86,7 @@
       \begin{tikzpicture}
         \filldraw[color = gray!40, draw=black] (-1.4,-0.4) -- (-0.6,-0.5) -- (-0.6,0.5) -- (-1.4, 0.4) -- cycle;
         \draw[->] (-1,0) -- (-3,-0.8);
-        \draw[->] (-1,0) -- (-3,-1);
+        \draw[->] (-1,0) -- (-3,-1); 
         \draw[->] (-1,0) -- (-3,-1.2) node[midway, below] {\(\bm{\omega_i}\)};
         \draw[thick] (-1,0)  --(-3,1) node[midway, above] {\(\bm{\omega_o}\)};
       \end{tikzpicture}
@@ -120,6 +112,23 @@
       \(\bm n\)& surface normal at \(\mathbf x\) & \(\Omega\) & unit hemisphere above \(\bm n\)
     \end{tabu}
   \end{center}
+\end{frame}
+
+\begin{frame}{Image generation - Monte Carlo path tracing}
+  \begin{columns}
+ \column{0.5\textwidth}
+\begin{itemize}
+\item Recursively calculating the radiance on a path until a stopping condition
+\item Integrate over all paths for every pixel
+\end{itemize}
+
+ \column{0.5\textwidth}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=\linewidth,keepaspectratio]{intro.png}
+      \caption{Monte Carlo path tracing}
+    \end{figure}
+  \end{columns}
 \end{frame}
 
 \begin{frame}{A Model for Individual Light Bounces}
@@ -451,6 +460,26 @@
       \centering
       \includegraphics[width=.9\linewidth]{DS100.png}
       \caption{Uniform sampling, 100 samples/pixel}
+      \label{fig:sub2}
+    \end{figure}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Rendered images}
+  \begin{columns}
+    \column{0.5\textwidth}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=.9\linewidth]{SAM1000.png}
+      \caption{Importance sampling, 1000 samples/pixel}
+      \label{fig:sub1}
+    \end{figure}
+
+    \column{0.5\textwidth}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=.9\linewidth]{UNIsam1000.png}
+      \caption{Uniform sampling, 1000 samples/pixel}
       \label{fig:sub2}
     \end{figure}
   \end{columns}
