@@ -21,7 +21,6 @@
 \DeclarePairedDelimiter\ip{\langle }{\rangle}
 \DeclareMathOperator{\proj}{proj}
 \newcommand{\CC}{C\nolinebreak\hspace{-.05em}\raisebox{.4ex}{\tiny\bf +}\nolinebreak\hspace{-.10em}\raisebox{.4ex}{\tiny\bf +}}
-\def\CC{{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\tiny\bf ++}}}
 
 \title{Importance Sampling in Ray Tracing}
 \subtitle{}
@@ -34,8 +33,18 @@
 \maketitle
 
 \begin{frame}{Table of contents}
-  \setbeamertemplate{section in toc}[sections numbered]
-  \tableofcontents[hideallsubsections]
+  \begin{columns}
+    \column{0.5\textwidth}
+    \setbeamertemplate{section in toc}[sections numbered]
+    \tableofcontents[hideallsubsections]
+
+    \column{0.5\textwidth}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=\linewidth]{raytracing_example.png}
+      \caption{Some rays have been traced}
+    \end{figure}
+  \end{columns}
 \end{frame}
 
 \section{Introduction}
